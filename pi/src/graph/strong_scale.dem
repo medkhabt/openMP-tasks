@@ -1,0 +1,39 @@
+set terminal pngcairo size 1280,720
+set output 'build/graph/strong_scale.png' 
+set title "Strong scale" 
+set title font ",20" textcolor lt -1 norotate 
+array matrix_x[9]
+array matrix_y[9]
+matrix_x[1] = 1; matrix_y[1] = 1
+matrix_x[2] = 1; matrix_y[2] = 2
+matrix_x[3] = 1; matrix_y[3] = 3
+matrix_x[4] = 2; matrix_y[4] = 2
+matrix_x[5] = 1; matrix_y[5] = 5
+matrix_x[6] = 2; matrix_y[6] = 3
+matrix_x[7] = 1; matrix_y[7] = 7
+matrix_x[8] = 2; matrix_y[8] = 4
+matrix_x[9] = 3; matrix_y[9] = 3
+
+filename = 'build/speedup_strong_scale.dat'
+select_impl(x) = sprintf(' awk '' {if($1 == "%s") print}'' %s', x, filename)
+implsCmd = sprintf('cut -f 1 -d " " '. filename . ' | sort | uniq') 
+impls = system('cut -f 1 -d " " '. filename . ' | sort | uniq')
+number_impls = system(sprintf('%s | wc -l', implsCmd)) + 0
+set style data linespoints
+
+set multiplot layout matrix_x[number_impls],matrix_y[number_impls] 
+do for [ i in impls ] { 
+    command = sprintf('%s |  cut -f 3 -d " " | sort | uniq', select_impl(i))
+    from = system(command)
+    tmp(w) = sprintf('%s | awk ''{if ($2 == "%s") print}'' > %s', select_impl(i), w, "tmp_strong".w.".file")
+    select_source(w) = system(tmp(w))
+    do for [f in from] {
+        result = system(tmp(f))
+    }
+    set title sprintf('%s', i)
+    plot for [f in from] sprintf('tmp_strong%s.file',f)  using 3:5 title sprintf('n = %d',f + 0) 
+}
+unset multiplot
+
+
+system('rm tmp_strong*')
