@@ -8,6 +8,7 @@
 
 History: Written by Tim Mattson, 11/1999.
 Modified/extended by Jonathan Rouzaud-Cornabas, 10/2022
+Modified/extended by Khalil Loukhnati, 18/2024
 */
 
 #include <limits>
