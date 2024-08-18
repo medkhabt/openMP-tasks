@@ -24,13 +24,11 @@ Modified/extended by Khalil Loukhnati, 18/2024
 
 
 double step;
-
 int main (int argc, char** argv)
 {
-
     Execution exec(argc, argv); 
     // Read command line arguments.
-
+    
     int i;
     double x, pi, sum = 0.0;
     std::vector<std::string> arguments; 
@@ -47,10 +45,9 @@ int main (int argc, char** argv)
         // this should be the loop that we will try to parallelize
         // sum should be a global variable ? 
         // vary the chunck size too ? i think in schedule dynamic by default is 4. 
-        #pragma omp parallel for  num_threads(exec.num_cores) shared(sum)
+        #pragma omp parallel for reduction(+:sum) num_threads(exec.num_cores) 
         for (i=1;i<= exec.num_steps; i++){
             x = (i-0.5)*step;
-            #pragma omp critical 
             sum = sum + 4.0/(1.0+x*x);
         }
         pi = step * sum;
@@ -60,7 +57,7 @@ int main (int argc, char** argv)
     // Calculate time.
     double time = 1.0 * ( end.tv_sec - begin.tv_sec ) +
         1.0e-6 * ( end.tv_usec - begin.tv_usec );
-    arguments.push_back("critical");
+    arguments.push_back("reduction");
     arguments.push_back(std::to_string(exec.num_steps));
     arguments.push_back(std::to_string(exec.num_cores));
     arguments.push_back(std::to_string(exec.num_split));

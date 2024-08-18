@@ -24,10 +24,12 @@ draw the figurs and explain the performance.
 - [X] critical
 - [X] atomic 
 - [X] reduction 
-- [ ] split array into N parts, each thread compute a part and compute a partial sum
+- [X] split array into N parts, each thread compute a part and compute a partial sum
+- [ ] check which N split is the best for each n_occurance case.
 - [X] add args to specify number of cors 
 - [X] calculate  strong scaling  ( I just added the arg for it, i need split the save files depending on which scaling, so i have easier time 
 in the postprocessing with the awk.)
 - [X] calculate weak scaling  
 - [ ] Median, avg, error margin ? (taking in consideration the result from the sequential part.) 
+- [ ] Plot theoritical strong and weak scaling ? 
 

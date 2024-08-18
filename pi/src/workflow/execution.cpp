@@ -31,6 +31,10 @@ Execution::Execution(int argc, char** argv){
             }else {
                 this->scaling = WEAK;  
             }
+        } else if( (strcmp(argv[i], "-D") == 0)){
+                this->num_split = atol(argv[++i]);  
+            printf( "  User num_split is %ld\n", num_cores );
+       
         } else if ( ( strcmp( argv[ i ], "-h" ) == 0 ) || ( strcmp( argv[ i ], "-help" ) == 0 ) ) {
             printf( "  Pi Options:\n" );
             printf( "  -num_steps (-N) <int>:      Number of steps to compute Pi (by default 100000000)\n" );

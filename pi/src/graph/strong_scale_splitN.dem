@@ -1,0 +1,39 @@
+set terminal pngcairo size 1280,720
+set output 'build/graph/strong_scale_splitN.png' 
+set title "Split comparaison of Strong scale" 
+set title font ",20" textcolor lt -1 norotate 
+array matrix_x[9]
+array matrix_y[9]
+matrix_x[1] = 1; matrix_y[1] = 1
+matrix_x[2] = 1; matrix_y[2] = 2
+matrix_x[3] = 1; matrix_y[3] = 3
+matrix_x[4] = 2; matrix_y[4] = 2
+matrix_x[5] = 3; matrix_y[5] = 2
+matrix_x[6] = 3; matrix_y[6] = 2
+matrix_x[7] = 3; matrix_y[7] = 3
+matrix_x[8] = 3; matrix_y[8] = 3
+matrix_x[9] = 3; matrix_y[9] = 3
+
+filename = 'build/speedup_strong_compare_split.dat'
+select_occurance(x) = sprintf(' awk '' {if($2 == "%s") print}'' %s', x, filename)
+occurancesCmd = sprintf('cut -f 3 -d " " '. filename . ' | sort | uniq') 
+occurances  = system('cut -f 3 -d " " '. filename . ' | sort | uniq')
+number_occurances= system(sprintf('%s | wc -l', occurancesCmd)) + 0
+set style data linespoints
+
+set multiplot layout matrix_x[number_occurances],matrix_y[number_occurances] 
+do for [ i in occurances] { 
+    splitsCommand = sprintf('%s |  cut -f 7 -d " " | sort | uniq', select_occurance(i))
+    splits = system(splitsCommand)
+    tmp(w) = sprintf('%s | awk ''{if ($4 == "%s") print}'' > %s', select_occurance(i), w, "tmp_strong_split".w.".file")
+    select_source(w) = system(tmp(w))
+    do for [f in splits] {
+        result = system(tmp(f))
+    }
+    set title sprintf('%s', i)
+    plot for [f in splits] sprintf('tmp_strong_split%s.file',f)  using 3:6 title sprintf('n = %d',f + 0) 
+}
+unset multiplot
+
+
+system('rm tmp_strong_split*')

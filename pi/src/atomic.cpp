@@ -61,6 +61,7 @@ int main (int argc, char** argv)
     arguments.push_back("atomic");
     arguments.push_back(std::to_string(exec.num_steps));
     arguments.push_back(std::to_string(exec.num_cores));
+    arguments.push_back(std::to_string(exec.num_split));
     arguments.push_back(std::to_string(pi));
     file.generate(arguments, time);
     printf("\n pi with %ld steps is %lf in %lf seconds\n ",exec.num_steps,pi,time);

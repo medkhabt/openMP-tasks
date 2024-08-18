@@ -10,7 +10,9 @@ all: clean build run
 build : $(CPP_SRC)
 	mkdir build 2>/dev/null; mkdir build/graph 2>/dev/null; clang++ $(CPPFLAGS) -O3 $(INC) -o build/sequential src/main.cpp $(CPP_SRC) 
 	clang++ $(CPPFLAGS) -O3 $(INC) -o build/critical src/critical.cpp $(CPP_SRC) $(LIB) 
-	clang++ $(CPPFLAGS) -O3 $(INC) -o build/atomic src/atomic.cpp $(CPP_SRC) $(LIB) 2>&1 | less
+	clang++ $(CPPFLAGS) -O3 $(INC) -o build/atomic src/atomic.cpp $(CPP_SRC) $(LIB)
+	clang++ $(CPPFLAGS) -O3 $(INC) -o build/reduction src/reduction.cpp $(CPP_SRC) $(LIB) 
+	clang++ $(CPPFLAGS) -O3 $(INC) -o build/splitN src/splitN.cpp $(CPP_SRC) $(LIB) 2>&1 | less
 run :  
 	./execution.sh
 clean: 

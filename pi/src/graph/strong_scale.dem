@@ -8,10 +8,10 @@ matrix_x[1] = 1; matrix_y[1] = 1
 matrix_x[2] = 1; matrix_y[2] = 2
 matrix_x[3] = 1; matrix_y[3] = 3
 matrix_x[4] = 2; matrix_y[4] = 2
-matrix_x[5] = 1; matrix_y[5] = 5
-matrix_x[6] = 2; matrix_y[6] = 3
-matrix_x[7] = 1; matrix_y[7] = 7
-matrix_x[8] = 2; matrix_y[8] = 4
+matrix_x[5] = 3; matrix_y[5] = 2
+matrix_x[6] = 3; matrix_y[6] = 2
+matrix_x[7] = 3; matrix_y[7] = 3
+matrix_x[8] = 3; matrix_y[8] = 3
 matrix_x[9] = 3; matrix_y[9] = 3
 
 filename = 'build/speedup_strong_scale.dat'
@@ -31,7 +31,7 @@ do for [ i in impls ] {
         result = system(tmp(f))
     }
     set title sprintf('%s', i)
-    plot for [f in from] sprintf('tmp_strong%s.file',f)  using 3:5 title sprintf('n = %d',f + 0) 
+    plot for [f in from] sprintf('tmp_strong%s.file',f)  using 3:6 title sprintf('n = %d',f + 0) 
 }
 unset multiplot
 

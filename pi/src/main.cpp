@@ -46,6 +46,7 @@ int main (int argc, char** argv)
     arguments.push_back("sequential");
     arguments.push_back(std::to_string(exec.num_steps));
     arguments.push_back(std::to_string(exec.num_cores));
+    arguments.push_back(std::to_string(exec.num_split));
     arguments.push_back(std::to_string(pi));
 
     file.generate(arguments, time);

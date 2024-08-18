@@ -24,15 +24,13 @@ Modified/extended by Khalil Loukhnati, 18/2024
 
 
 double step;
-
 int main (int argc, char** argv)
 {
-
     Execution exec(argc, argv); 
     // Read command line arguments.
-
+    
     int i;
-    double x, pi, sum = 0.0;
+    double x, pi, sum = 0.0, localSum = 0.0;
     std::vector<std::string> arguments; 
     CsvFile file(exec.fileName); 
 
@@ -42,25 +40,35 @@ int main (int argc, char** argv)
     struct timeval begin, end;
 
     gettimeofday( &begin, NULL );
-    for(int r=0 ; r< 100; r++){
-        sum = 0.0 ;
-        // this should be the loop that we will try to parallelize
-        // sum should be a global variable ? 
-        // vary the chunck size too ? i think in schedule dynamic by default is 4. 
-        #pragma omp parallel for  num_threads(exec.num_cores) shared(sum)
-        for (i=1;i<= exec.num_steps; i++){
-            x = (i-0.5)*step;
-            #pragma omp critical 
-            sum = sum + 4.0/(1.0+x*x);
+    // I should have 2 loops, the first loop taking the number of jobs
+    // to assignate the threads.
+    // the second loop is the size of the array that we gave to each thread. 
+    // in the seocond loop we make a local summation and we do a reduction on the 
+    // results of each thread.
+    // TODO make also the number N configurable and test on it.
+        for(int r=0 ; r< 100; r++){
+            sum = 0.0 ;
+            // this should be the loop that we will try to parallelize
+            // sum should be a global variable ? 
+            // vary the chunck size too ? i think in schedule dynamic by default is 4. 
+            #pragma omp parallel for reduction(+:sum) num_threads(exec.num_cores) private(localSum)
+            for (i=1;i<= exec.num_steps/exec.num_split; i++){
+                localSum = 0.0;
+                for(int k=0; k < exec.num_split; k++){
+                    x = (i-0.5)*step;
+                    localSum = localSum + 4.0/(1.0+x*x);
+                }
+                sum = sum + localSum;
+
+            }
+            pi = step * sum;
         }
-        pi = step * sum;
-    }
     gettimeofday( &end, NULL );
 
     // Calculate time.
     double time = 1.0 * ( end.tv_sec - begin.tv_sec ) +
         1.0e-6 * ( end.tv_usec - begin.tv_usec );
-    arguments.push_back("critical");
+    arguments.push_back("splitN");
     arguments.push_back(std::to_string(exec.num_steps));
     arguments.push_back(std::to_string(exec.num_cores));
     arguments.push_back(std::to_string(exec.num_split));
