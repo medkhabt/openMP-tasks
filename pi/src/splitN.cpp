@@ -52,10 +52,10 @@ int main (int argc, char** argv)
             // sum should be a global variable ? 
             // vary the chunck size too ? i think in schedule dynamic by default is 4. 
             #pragma omp parallel for reduction(+:sum) num_threads(exec.num_cores) private(localSum)
-            for (i=1;i<= exec.num_steps/exec.num_split; i++){
+            for (i=0;i< exec.num_steps/exec.num_split; i++){
                 localSum = 0.0;
-                for(int k=0; k < exec.num_split; k++){
-                    x = (i-0.5)*step;
+                for(int k=1; k <= exec.num_split; k++){
+                    x = (i*exec.num_split + k-0.5)*step;
                     localSum = localSum + 4.0/(1.0+x*x);
                 }
                 sum = sum + localSum;
@@ -74,6 +74,6 @@ int main (int argc, char** argv)
     arguments.push_back(std::to_string(exec.num_split));
     arguments.push_back(std::to_string(pi));
     file.generate(arguments, time);
-    printf("\n pi with %ld steps is %lf in %lf seconds\n ",exec.num_steps,pi,time);
+    printf("\n impl: (%s), pi with %ld steps is %lf in %lf seconds \n ", "splitN", exec.num_steps,pi,time);
 
 }

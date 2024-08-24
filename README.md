@@ -30,6 +30,7 @@ draw the figurs and explain the performance.
 - [X] calculate  strong scaling  ( I just added the arg for it, i need split the save files depending on which scaling, so i have easier time 
 in the postprocessing with the awk.)
 - [X] calculate weak scaling  
+- [X] fix Nsplits pi calculations.
 - [ ] Median, avg, error margin ? (taking in consideration the result from the sequential part.) 
 - [ ] Plot theoritical strong and weak scaling ? 
 
