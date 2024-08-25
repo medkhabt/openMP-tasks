@@ -31,7 +31,8 @@ do for [ i in occurances] {
         result = system(tmp(f))
     }
     set title sprintf('%s', i)
-    plot for [f in splits] sprintf('tmp_strong_split%s.file',f)  using 3:6 title sprintf('n = %d',f + 0) 
+    plot for [f in splits] sprintf('tmp_strong_split%s.file',f)  using 3:6 title sprintf('n = %d',f + 0), x lw 2 dt 4 lc rgb "#FF0000" title sprintf('ideal speedUp')
+
 }
 unset multiplot
 

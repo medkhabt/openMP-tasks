@@ -19,6 +19,7 @@ select_occurance(x) = sprintf(' awk '' {if(length($2) == "%s") print}'' %s', x, 
 occurancesCmd = sprintf('cut -f 3 -d " " '. filename . '| awk ''{print length($0)}'' | sort | uniq') 
 occurances  = system('cut -f 3 -d " " '. filename . ' | awk ''{print length($0)}'' | sort | uniq')
 number_occurances= system(sprintf('%s | wc -l', occurancesCmd)) + 0
+set yrange [0:1.2]
 set style data linespoints
 
 set multiplot layout matrix_x[number_occurances],matrix_y[number_occurances] 
@@ -31,7 +32,8 @@ do for [ i in occurances] {
         result = system(tmp(f))
     }
     set title sprintf('%d', 10**(i+0))
-    plot for [f in splits] sprintf('tmp_weak_split%s.file',f)  using 3:6 title sprintf('split = %d',f + 0) 
+    plot for [f in splits] sprintf('tmp_weak_split%s.file',f)  using 3:6 title sprintf('split = %d',f + 0), 1 lw 2 dt 4 lc rgb "#FF0000" title sprintf('ideal Effeciency')
+
 }
 unset multiplot
 
