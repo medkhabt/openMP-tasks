@@ -16,6 +16,7 @@ Modified/extended by Khalil Loukhnati, 18/2024
 #include <sys/time.h>
 #include <file.h>
 #include <execution.h>
+#include <iostream>
 
 
 int main (int argc, char** argv)
@@ -33,7 +34,7 @@ int main (int argc, char** argv)
     for(int r=0 ; r< 100; r++){
         sum = 0.0 ;
         for (i=1;i<= exec.num_steps; i++){
-            x = (i-0.5)*step;
+            x = (i+0.5)*step;
             sum = sum + 4.0/(1.0+x*x);
         }
         pi = step * sum;

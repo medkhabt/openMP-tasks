@@ -47,7 +47,7 @@ int main (int argc, char** argv)
         // vary the chunck size too ? i think in schedule dynamic by default is 4. 
         #pragma omp parallel for num_threads(exec.num_cores) shared(sum)
         for (i=1;i<= exec.num_steps; i++){
-            x = (i-0.5)*step;
+            x = (i+0.5)*step;
             #pragma omp atomic 
             sum = sum + 4.0/(1.0+x*x);
         }

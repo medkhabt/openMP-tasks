@@ -55,7 +55,7 @@ int main (int argc, char** argv)
             for (i=0;i< exec.num_steps/exec.num_split; i++){
                 localSum = 0.0;
                 for(int k=1; k <= exec.num_split; k++){
-                    x = (i*exec.num_split + k-0.5)*step;
+                    x = (i*exec.num_split + k+0.5)*step;
                     localSum = localSum + 4.0/(1.0+x*x);
                 }
                 sum = sum + localSum;
