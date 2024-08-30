@@ -11,6 +11,7 @@ class Execution {
         long num_steps = 100000000;
         long num_cores = 4;
         long num_split = 1;
+        double piExpec = 3.1415926535;
         double step;
         SCALING scaling = STRONG;
         std::string fileName; 

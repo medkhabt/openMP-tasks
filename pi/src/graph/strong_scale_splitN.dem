@@ -2,6 +2,7 @@ set terminal pngcairo size 1280,720
 set output 'build/graph/strong_scale_splitN.png' 
 set title "Split comparaison of Strong scale" 
 set title font ",20" textcolor lt -1 norotate 
+set key font ",10"
 array matrix_x[9]
 array matrix_y[9]
 matrix_x[1] = 1; matrix_y[1] = 1
@@ -19,6 +20,8 @@ select_occurance(x) = sprintf(' awk '' {if($2 == "%s") print}'' %s', x, filename
 occurancesCmd = sprintf('cut -f 3 -d " " '. filename . ' | sort | uniq') 
 occurances  = system('cut -f 3 -d " " '. filename . ' | sort | uniq')
 number_occurances= system(sprintf('%s | wc -l', occurancesCmd)) + 0
+lcvar(lc) = ceil(log10(lc))
+lcOffset(lc) = sin(3*log10(lc)) 
 set style data linespoints
 
 set multiplot layout matrix_x[number_occurances],matrix_y[number_occurances] 
@@ -31,7 +34,8 @@ do for [ i in occurances] {
         result = system(tmp(f))
     }
     set title sprintf('%s', i)
-    plot for [f in splits] sprintf('tmp_strong_split%s.file',f)  using 3:6 title sprintf('n = %d',f + 0), x lw 2 dt 4 lc rgb "#FF0000" title sprintf('ideal speedUp')
+    plot for [f in splits] sprintf('tmp_strong_split%s.file',f) using 3:7:(sprintf("err=%.6f", $6)):2 with labels font ",7" textcolor lt lcvar(f+0) offset lcOffset(f+0),lcOffset(f+0)  notitle, \
+        for [f in splits] sprintf('tmp_strong_split%s.file',f)  using 3:7 title sprintf('split = %d',f + 0) lc lcvar(f+0), x lw 2 dt 4 lc rgb "#FF0000" title sprintf('ideal speedUp')
 
 }
 unset multiplot

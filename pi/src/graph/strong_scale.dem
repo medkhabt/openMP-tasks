@@ -2,6 +2,8 @@ set terminal pngcairo size 1280,720
 set output 'build/graph/strong_scale.png' 
 set title "Strong scale" 
 set title font ",20" textcolor lt -1 norotate 
+set key font ",10"
+set key left top
 array matrix_x[9]
 array matrix_y[9]
 matrix_x[1] = 1; matrix_y[1] = 1
@@ -19,20 +21,31 @@ select_impl(x) = sprintf(' awk '' {if($1 == "%s") print}'' %s', x, filename)
 implsCmd = sprintf('cut -f 1 -d " " '. filename . ' | sort | uniq') 
 impls = system('cut -f 1 -d " " '. filename . ' | sort | uniq')
 number_impls = system(sprintf('%s | wc -l', implsCmd)) + 0
+
+#set logscale y
+set xrange [0:4.1]
 set style data linespoints
+
 
 set multiplot layout matrix_x[number_impls],matrix_y[number_impls] 
 do for [ i in impls ] { 
     command = sprintf('%s |  cut -f 3 -d " " | sort | uniq', select_impl(i))
     from = system(command)
+    counter = 0 
+    lcvar(lc) = 1 + int(log10(int(lc-1))) % 4 
+    lcOffset(lc) = sin(3*log10(int(lc-1))) 
+    num_from = words(from)
+    array fromColor[num_from]
     tmp(w) = sprintf('%s | awk ''{if ($2 == "%s") print}'' > %s', select_impl(i), w, "tmp_strong".w.".file")
     select_source(w) = system(tmp(w))
     do for [f in from] {
         result = system(tmp(f))
     }
     set title sprintf('%s', i)
-    plot for [f in from] sprintf('tmp_strong%s.file',f)  using 3:6 title sprintf('n = %d',f + 0), x lw 2 dt 4 lc rgb "#FF0000"  title sprintf('ideal speedUp')
-
+#point offset char 1,1
+    plot for [f in from] sprintf('tmp_strong%s.file', f) using 3:7:(sprintf("err=%.6f", $6)):2 with labels font ",7" textcolor lt lcvar(f+0) offset lcOffset(f+0),lcOffset(f+0)  notitle, \
+         for [f in from] sprintf('tmp_strong%s.file', f) using 3:7 title sprintf('n = %d', f + 0) lc lcvar(f + 0), \
+         x with lines lw 2 dt 4 lc rgb "#FF0000" title 'ideal speedUp'
 }
 unset multiplot
 

@@ -31,6 +31,12 @@ draw the figurs and explain the performance.
 in the postprocessing with the awk.)
 - [X] calculate weak scaling  
 - [X] fix Nsplits pi calculations.
-- [ ] Median, avg, error margin ? (taking in consideration the result from the sequential part.) 
-- [ ] Plot theoritical strong and weak scaling ? 
+- [X] Median, avg, error margin ? (taking in consideration the result from the sequential part.) 
+    - [X] how to repreent error margin on the graph , as i noticed that the error is bigger at the  beginning and gets smaller. ( maybe it should be presented 
+in an other graph ?) 
+- [X] Use the same color for the error and the graph on the plot also try to use different coordinates for each graph so there is less interj. btw points'labels
+- [X] Plot theoritical strong and weak scaling ? 
+- [ ] Generate a pdf report with all the results. 
+#### Optional
+- [ ] add cmake maybe 
 

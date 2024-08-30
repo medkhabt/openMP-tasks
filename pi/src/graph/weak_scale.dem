@@ -2,6 +2,8 @@ set terminal pngcairo size 1280,720
 set output 'build/graph/weak_scale.png' 
 set title "Weak scale" 
 set title font ",20" textcolor lt -1 norotate 
+set key font ",10"
+set key left bottom 
 array matrix_x[9]
 array matrix_y[9]
 matrix_x[1] = 1; matrix_y[1] = 1
@@ -20,19 +22,24 @@ implsCmd = sprintf('cut -f 1 -d " " '. filename . ' | sort | uniq')
 impls = system('cut -f 1 -d " " '. filename . ' | sort | uniq')
 number_impls = system(sprintf('%s | wc -l', implsCmd)) + 0
 
-set yrange [0:1.2]
+set yrange [*:1.2]
+set xrange [0:4.1]
+#set logscale y
 set style data linespoints
 
 set multiplot layout matrix_x[number_impls],matrix_y[number_impls] 
 do for [ i in impls ] { 
     command = sprintf('%s |  cut -f 3 -d " " | awk ''{print length($0)}'' | sort | uniq ', select_impl(i))
     from = system(command)
+    lcvar(lc) = 1 + int(log10(int(lc-1))) % 4 
+    lcOffset(lc) = sin(3*log10(int(lc-1))) 
     tmp(w) = sprintf('%s | awk ''{if (length($2) == "%s") print}'' > %s', select_impl(i), w, "tmp_weak".w.".file")
     do for [f in from] {
         result = system(tmp(f))
     }
     set title sprintf('%s', i)
-    plot for [f in from] sprintf('tmp_weak%s.file',f)  using 3:6 title sprintf('n = %d', 10 ** (f + 0)), 1 lw 2 dt 4 lc rgb "#FF0000" title sprintf('ideal Effeciency')
+    plot for [f in from] sprintf('tmp_weak%s.file', f) using 3:7:(sprintf("err=%.6f", $6)):2 with labels font ",7" textcolor lt lcvar(10 ** (f + 0)) offset lcOffset(10 ** (f + 0)),lcOffset(10 ** (f + 0))  notitle, \
+         for [f in from] sprintf('tmp_weak%s.file',f)  using 3:7 title sprintf('n = %d', 10 ** (f + 0)), 1 lw 2 dt 4 lc rgb "#FF0000" title sprintf('ideal Effeciency')
 }
 unset multiplot
 

@@ -1,7 +1,7 @@
 #! /bin/bash
 #
-#declare -a x=(1000000 100000000 10000000000 1000000000000)
-declare -a x=(100 10000 100000 )
+declare -a x=(1000000 100000000 10000000000 1000000000000)
+#declare -a x=(100 1000 10000 100000)
 #Strong scaling 
 
 for i in ${!x[@]} ;
@@ -15,12 +15,13 @@ for i in ${!x[@]} ;
         done; done   
 awk -F, '{
     if($3 == 1){
-        ref[$1","$2] = $6
+        ref[$1","$2] = $7
     }
 }{
-    $6 =  ref[$1","$2] / $6 
-    print $1, $2, $3, $4, $5, $6
+    $7 =  ref[$1","$2] / $7 
+    print $1, $2, $3, $4, $5, $6, $7
 }' build/fileTest_strong_scale.csv > build/speedup_strong_scale.dat
+
 
 
 gnuplot -e "load 'src/graph/strong_scale.dem'"
@@ -39,17 +40,16 @@ for i in ${!x[@]} ;
 awk -F, '
 FNR == NR {
     if($3 == 1){
-        ref[$1","length($2)] = $6
+        ref[$1","length($2)] = $7
     }
     next
 }{
-    $6 =  (ref[$1","length($2)]) / $6 
-    print $1, $2, $3, $4, $5, $6
+    $7 =  (ref[$1","length($2)]) / $7 
+    print $1, $2, $3, $4, $5, $6, $7
 }' build/fileTest_weak_scale.csv build/fileTest_weak_scale.csv> build/speedup_weak_scale.dat
 
 gnuplot -e "load 'src/graph/weak_scale.dem'"
 open build/graph/weak_scale.png & 
-
 # Checking the best N split 
 # It should be for each n_occurance. 
 # for each one we multiple by 10 until we have one left. 
@@ -68,11 +68,11 @@ done
 # do it again just for splitN
 awk -F, '{
     if($3 == 1 && $4 == 1){
-        ref[$1","$2] = $6
+        ref[$1","$2] = $7
     }
 }{
-    $6 =  ref[$1","$2] / $6 
-    print $1, $2, $3, $4, $5, $6
+    $7 =  ref[$1","$2] / $7 
+    print $1, $2, $3, $4, $5, $6, $7
 }' build/compareSplit_strong_scale.csv > build/speedup_strong_compare_split.dat
 
 
@@ -88,12 +88,12 @@ for i in ${!x[@]} ;
 awk -F, '
 FNR == NR {
     if($3 == 1 && $4 == 1){
-        ref[$1","length($2)] = $6
+        ref[$1","length($2)] = $7
     }
     next
 }{
-    $6 =  (ref[$1","length($2)]) / $6 
-    print $1, $2, $3, $4, $5, $6
+    $7 =  (ref[$1","length($2)]) / $7 
+    print $1, $2, $3, $4, $5, $6, $7
 }' build/compareSplit_weak_scale.csv build/compareSplit_weak_scale.csv> build/speedup_weak_compare_split.dat
 
 gnuplot -e "load 'src/graph/weak_scale_splitN.dem'"
