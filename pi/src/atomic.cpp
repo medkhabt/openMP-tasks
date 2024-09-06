@@ -21,7 +21,7 @@ Modified/extended by Khalil Loukhnati, 18/2024
 #include <omp.h>
 #include <file.h>
 #include <execution.h>
-
+#include <sstream>
 
 double step;
 int main (int argc, char** argv)
@@ -32,6 +32,7 @@ int main (int argc, char** argv)
     int i;
     double x, pi, sum = 0.0;
     std::vector<std::string> arguments; 
+    std::stringstream ss1; 
     CsvFile file(exec.fileName); 
 
     step = 1.0/(double) exec.num_steps;
@@ -63,7 +64,8 @@ int main (int argc, char** argv)
     arguments.push_back(std::to_string(exec.num_cores));
     arguments.push_back(std::to_string(exec.num_split));
     arguments.push_back(std::to_string(pi));
-    arguments.push_back(std::to_string(abs(pi - exec.piExpec)));
+    ss1 << std::abs(pi - exec.piExpec);
+    arguments.push_back(ss1.str());
     file.generate(arguments, time);
     printf("\n pi with %ld steps is %lf in %lf seconds\n ",exec.num_steps,pi,time);
 
